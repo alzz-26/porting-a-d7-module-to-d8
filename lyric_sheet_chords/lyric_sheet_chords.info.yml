@@ -1,0 +1,11 @@
+name: 'Lyric Sheet Chords'
+description: 'Input filter for chords on a lyric sheet'
+package: Other
+core: 8.x
+scripts:
+  - lyric_sheet_chords.js
+stylesheets:
+  all:
+    - lyric_sheet_chords.css
+type: module
+

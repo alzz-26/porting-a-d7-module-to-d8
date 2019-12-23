@@ -1,0 +1,23 @@
+<?php
+
+/**
+ * Implements hook_entity_display_build_alter().
+ *
+ * Very often, chords are inserted in the middle of words; this function should
+ * remove all such chords for the purposes of search.
+ */
+
+function lyric_sheet_chords_entity_display_build_alter(&$build, $context) {
+  if ($context['view_mode'] == 'search_index' || $context['view_mode'] == 'search_result') {
+    foreach (\Drupal\Core\Render\Element::children($build) as $field) {
+      if (!empty($build[$field][0]['#markup'])) {
+        foreach (\Drupal\Core\Render\Element::children($build[$field]) as $index) {
+          $build[$field][$index]['#markup'] = preg_replace("|<span class=\"chord\"><span[^<]+</span></span>|", '', $build[$field][$index]['#markup']);
+          $build[$field][$index]['#markup'] = preg_replace("|\.chord-text[^}]+}\n|", '', $build[$field][$index]['#markup']);
+          $build[$field][$index]['#markup'] = str_replace("<style>\n<!--/*--><![CDATA[/* ><!--*/\n\n\n/*--><!]]>*/\n</style>", '', $build[$field][$index]['#markup']);
+          $build[$field][$index]['#markup'] = preg_replace('|<a href="#" class="remove-chords">[^\<]*</a>|', '', $build[$field][$index]['#markup']);
+        }
+      }
+    }
+  }
+}
